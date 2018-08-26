@@ -46,6 +46,36 @@ public class ShortestPath {
         System.out.println();
     }
 
+    public static void floyd(int[][] graph, int[][] shortestPath, int[][] weight){
+        //初始化
+        for (int v = 0; v < graph.length; v++){
+            for (int w = 0; w < graph.length; w++){
+                weight[v][w] = graph[v][w];
+                shortestPath[v][w] = w;
+            }
+        }
+
+        //k为中转顶点的下标；v为起始顶点的下标；w为结束顶点的下标
+        for (int k = 0; k < graph.length; k++){
+            for (int v = 0; v < graph.length; v++){
+                for (int w = 0; w < graph.length; w++){
+                    if(weight[v][w] - weight[k][w] > weight[v][k]){
+                        weight[v][w] = weight[v][k] + weight[k][w];
+                        shortestPath[v][w] = shortestPath[v][k];
+                    }
+                }
+            }
+        }
+    }
+
+    private static void findPath(int[][] path, int i, int j){
+        System.out.print(i + " ");
+        while(i != j){
+            i = path[i][j];
+            System.out.print(i+" ");
+        }
+    }
+
     public static void main(String[] args) {
         int max = Integer.MAX_VALUE;
         int[][] graph = {{0,1,5,max,max,max,max,max,max},
@@ -57,6 +87,10 @@ public class ShortestPath {
                 {max,max,max,3,6,max,0,2,7},
                 {max,max,max,max,9,5,2,0,4},
                 {max,max,max,max,max,max,7,4,0}};
-        ShortestPath.dijkstra(graph, 2);
+        ShortestPath.dijkstra(graph, 0);
+        int[][] path = new int[graph.length][graph.length];
+        int[][] weight = new int[graph.length][graph.length];
+        ShortestPath.floyd(graph, path, weight);
+        findPath(path, 0, 8);
     }
 }
